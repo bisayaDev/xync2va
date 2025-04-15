@@ -94,7 +94,7 @@ class CalendarWidget extends FullCalendarWidget
 
                         $new_event = new Event();
                         $new_event->client_id = $data['client_id'];
-                        $new_event->date = $data['date'];
+                        $new_event->date = date('Y-m-d', strtotime($data['date']));
                         $new_event->type = $data['type'];
                         $new_event->starts_at = $startsAt;
                         $new_event->ends_at = $endsAt;
