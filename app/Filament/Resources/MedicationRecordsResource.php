@@ -54,9 +54,9 @@ class MedicationRecordsResource extends Resource
                     ->required()
                     ->disabledOn('edit')
                     ->options([
-                        'Initial' => 'Initial',
-                        'Ongoing' => 'Ongoing',
-                        'Follow-up' => 'Follow-up',
+                        'MD-Intake' => 'MD-Intake (30 mins)',
+                        'MD-FF' => 'MD-FF (15 mins)',
+                        'Referral ' => 'Referral (15 mins)',
                     ]),
                 TimePicker::make('starts_at')
                     ->required()
