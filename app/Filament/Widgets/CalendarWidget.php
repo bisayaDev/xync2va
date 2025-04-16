@@ -31,14 +31,20 @@ class CalendarWidget extends FullCalendarWidget
                 ->label('New Event Today')
                 ->color(Color::hex("#01A2E6"))
                 ->form([
+                    Select::make('medical_type')
+                        ->required()
+                        ->options([
+                            'medical' => 'Medical',
+                            'medication' => 'Medication',
+                        ]),
                     DatePicker::make('date')
                         ->required(),
                     Select::make('type')
                         ->required()
                         ->options([
-                            'Initial' => 'Initial',
-                            'Ongoing' => 'Ongoing',
-                            'Follow-up' => 'Follow-up',
+                           'MD-Intake' => 'MD-Intake (30 mins)',
+                           'MD-FF' => 'MD-FF (15 mins)',
+                           'Referral ' => 'Referral (15 mins)',
                         ]),
                     Select::make('client_id')
                         ->required()
@@ -48,6 +54,12 @@ class CalendarWidget extends FullCalendarWidget
                         ->options(Client::all()->pluck('full_name', 'id')),
                     TimePicker::make('starts_time')
                         ->required()
+                        ->live()
+//                        ->afterStateUpdated(function($state, $set, $get)
+//                        {
+//                            if($state)
+//                                $set('ends_at', Carbon::parse($state)->addMinutes(30));
+//                        })
                         ->columnSpan(1),
                     TimePicker::make('ends_time')
                         ->required()

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
+use App\Filament\Resources\MedicationRecordsResource\Pages;
+use App\Filament\Resources\MedicationRecordsResource\RelationManagers;
 use App\Models\Client;
 use App\Models\Event;
+use App\Models\MedicationRecords;
 use Carbon\Carbon;
+use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -18,11 +20,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EventResource extends Resource
+class MedicationRecordsResource extends Resource
 {
     protected static ?string $model = Event::class;
-    protected static ?string $label = "Medical Records";
+    protected static ?string $label = "Medication Records";
     protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
@@ -33,13 +37,13 @@ class EventResource extends Resource
         return $form
             ->schema([
                 Select::make('client_id')
-                ->columnSpanFull()
-                ->disabledOn('edit')
-                ->required()
-                ->searchable()
-                ->live()
-                ->label('Client / Patient')
-                ->options(Client::all()->pluck('full_name', 'id')),
+                    ->columnSpanFull()
+                    ->disabledOn('edit')
+                    ->required()
+                    ->searchable()
+                    ->live()
+                    ->label('Client / Patient')
+                    ->options(Client::all()->pluck('full_name', 'id')),
                 DatePicker::make('date')
                     ->required()
                     ->disabledOn('edit')
@@ -92,7 +96,7 @@ class EventResource extends Resource
                     ->label('Final Diagnosis')
                     ->required()
                     ->rows(6)
-                ->columnSpan(2),
+                    ->columnSpan(2),
             ])
             ->columns(2);
     }
@@ -116,7 +120,7 @@ class EventResource extends Resource
                     ->formatStateUsing(function($record) {
                         $date = Carbon::make($record->starts_at)->format('m/d/Y | l');
                         return $date;
-                }),
+                    }),
                 TextColumn::make('ends_at')
                     ->sortable()
                     ->searchable()
@@ -154,10 +158,10 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEvents::route('/'),
+            'index' => Pages\ListMedicationRecords::route('/'),
 //            'create' => Pages\CreateEvent::route('/create'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
-            'view' => Pages\ViewEvent::route('/{record}/view'),
+//            'edit' => Pages\EditEvent::route('/{record}/edit'),
+//            'view' => Pages\ViewEvent::route('/{record}/view'),
         ];
     }
 }
