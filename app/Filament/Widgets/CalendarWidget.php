@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Resources\EventResource;
+use App\Filament\Resources\MedicationRecordsResource;
 use App\Models\Client;
 use App\Models\Event;
 use Carbon\Carbon;
