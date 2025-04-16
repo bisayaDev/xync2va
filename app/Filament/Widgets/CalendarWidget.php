@@ -71,6 +71,7 @@ class CalendarWidget extends FullCalendarWidget
                                 if($get('type') == 'MD-Intake'){
                                     $addTime = 30;
                                 }
+
                                 elseif($get('type') == 'MD-FF' || $get('type') == 'Referral'){
                                     $addTime = 15;
                                 }
@@ -92,16 +93,22 @@ class CalendarWidget extends FullCalendarWidget
                         ->columnSpan(1),
                     Section::make()
                      ->schema([
-                         Placeholder::make('Client\' Birthday')
+                         Placeholder::make('Date of Birth')
                             ->content(function ($get){
                                 if($get('client_id'))
                                     return Carbon::make(Client::find($get('client_id'))->date_of_birth)->format('m/d/Y');
                                 return "N/A";
                             }),
-                         Placeholder::make('Client\'s Phone Number')
+                         Placeholder::make('Phone Number')
                              ->content(function ($get){
                                  if($get('client_id'))
                                      return Client::find($get('client_id'))->phone;
+                                 return "N/A";
+                             }),
+                         Placeholder::make('Medication Type')
+                             ->content(function ($get){
+                                 if($get('client_id'))
+                                     return ucfirst(Client::find($get('client_id'))->med_type);
                                  return "N/A";
                              }),
                          Placeholder::make('Client\'s Diagnosis')
@@ -126,12 +133,23 @@ class CalendarWidget extends FullCalendarWidget
                 ->action(
                     function (Form $form) {
                         $data = $form->getState();
+                        if(!Client::find($data['client_id'])->med_type)
+                        {
+                            Notification::make()
+                                ->title('Missing Medication Type')
+                                ->danger()
+                                ->body('Patient ' . Client::find($data['client_id'])->full_name . ' doesn\'t have a med type.')
+                                ->send();
+                            return false;
+                        }
+
                         $data['date'] = Carbon::make($data['date'])->format('m/d/Y');
-                        $startsAt = \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $data['date'] . ' ' . $data['starts_time']);
-                        $endsAt = \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $data['date'] . ' ' . $data['ends_time']);
+
+                        $startsAt = \Carbon\Carbon::createFromFormat('m/d/Y H:i', $data['date'] . ' ' . $data['starts_time']);
+                        $endsAt = \Carbon\Carbon::createFromFormat('m/d/Y H:i', $data['date'] . ' ' . $data['ends_time']);
 
                         $new_event = new Event();
-                        $new_event->med_type = $data['med_type'];
+                        $new_event->med_type = Client::find($data['client_id'])->med_type;
                         $new_event->client_id = $data['client_id'];
                         $new_event->date = date('Y-m-d', strtotime($data['date']));
                         $new_event->type = $data['type'];
