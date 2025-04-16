@@ -64,6 +64,7 @@ class ClientResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('date_of_birth')
+                    ->date('m/d/Y')
                     ->formatStateUsing(fn($state)=> date('m/d/Y', strtotime($state)))
                     ->searchable()
                     ->sortable(),

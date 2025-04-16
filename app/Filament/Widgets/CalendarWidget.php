@@ -31,7 +31,7 @@ class CalendarWidget extends FullCalendarWidget
                 ->label('New Event Today')
                 ->color(Color::hex("#01A2E6"))
                 ->form([
-                    Select::make('medical_type')
+                    Select::make('med_type')
                         ->required()
                         ->options([
                             'medical' => 'Medical',
@@ -105,6 +105,7 @@ class CalendarWidget extends FullCalendarWidget
                         $endsAt = \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $data['date'] . ' ' . $data['ends_time']);
 
                         $new_event = new Event();
+                        $new_event->med_type = $data['med_type'];
                         $new_event->client_id = $data['client_id'];
                         $new_event->date = date('Y-m-d', strtotime($data['date']));
                         $new_event->type = $data['type'];

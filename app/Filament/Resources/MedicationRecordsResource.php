@@ -19,6 +19,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -132,7 +133,9 @@ class MedicationRecordsResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                Filter::make('med_type')
+                    ->baseQuery(fn (Builder $query) => $query->where('med_type', 'medication'))
+                    ->form([])
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
