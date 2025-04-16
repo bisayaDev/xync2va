@@ -145,8 +145,9 @@ class CalendarWidget extends FullCalendarWidget
                     'title' => Client::find($event->client_id)->full_name,
                     'start' => $event->starts_at,
                     'end' => $event->ends_at,
-                    'url' => EventResource::getUrl(name: 'edit', parameters: ['record' => $event]),
-//                    'shouldOpenUrlInNewTab' => true
+                    'url' => $event->med_type === "medical" ? EventResource::getUrl(name: 'edit', parameters: ['record' => $event])
+                        : MedicationRecordsResource::getUrl(name: 'edit', parameters: ['record' => $event]),
+
                 ]
             )
             ->all();

@@ -163,7 +163,7 @@ class MedicationRecordsResource extends Resource
         return [
             'index' => Pages\ListMedicationRecords::route('/'),
 //            'create' => Pages\CreateEvent::route('/create'),
-//            'edit' => Pages\EditEvent::route('/{record}/edit'),
+            'edit' => Pages\EditMedicationRecords::route('/{record}/edit'),
 //            'view' => Pages\ViewEvent::route('/{record}/view'),
         ];
     }
