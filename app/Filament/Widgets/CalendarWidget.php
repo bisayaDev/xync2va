@@ -52,18 +52,49 @@ class CalendarWidget extends FullCalendarWidget
                         ->searchable()
                         ->live()
                         ->label('Client / Patient')
-                        ->options(Client::all()->pluck('full_name', 'id')),
+                        ->options(
+                            Client::all()->mapWithKeys(function ($client) {
+                                // Format the date of birth to mm/dd/yyyy
+                                $formattedDob = $client->date_of_birth ?
+                                    Carbon::parse($client->date_of_birth)->format('m/d/Y') :
+                                    'N/A';
+
+                                // Create the custom label with full_name | date_of_birth
+                                $label = "{$client->full_name} | {$formattedDob}";
+
+                                return [$client->id => $label];
+                            })
+                        ),
                     TimePicker::make('starts_time')
                         ->required()
                         ->live()
-//                        ->afterStateUpdated(function($state, $set, $get)
-//                        {
-//                            if($state)
-//                                $set('ends_at', Carbon::parse($state)->addMinutes(30));
-//                        })
+                        ->seconds(false)
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            if ($state) {
+                                // Parse the time into a Carbon instance
+                                $startsTime = Carbon::parse($state);
+                                $addTime = 15;
+                                if($get('type') == 'MD-Intake'){
+                                    $addTime = 30;
+                                }
+                                elseif($get('type') == 'MD-FF' || $get('type') == 'Referral'){
+                                    $addTime = 15;
+                                }
+
+                                // Add 30 minutes to the start time
+                                $endsTime = $startsTime->copy()->addMinutes($addTime)->format('H:i');
+
+
+                                // Set the ends_time value
+
+                                $set('ends_time', $endsTime);
+                            }
+                        })
                         ->columnSpan(1),
                     TimePicker::make('ends_time')
                         ->required()
+                        ->live()
+                        ->seconds(false)
                         ->columnSpan(1),
                     Section::make()
                      ->schema([
