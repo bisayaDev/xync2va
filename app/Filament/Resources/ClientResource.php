@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -65,7 +66,6 @@ class ClientResource extends Resource
                     ->sortable(),
                 TextColumn::make('date_of_birth')
                     ->date('m/d/Y')
-                    ->formatStateUsing(fn($state)=> date('m/d/Y', strtotime($state)))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -83,7 +83,18 @@ class ClientResource extends Resource
                     ->tooltip(fn($state) => $state),
             ])
             ->filters([
-                //
+                Filter::make('date_of_birth')
+                    ->form([
+                        DatePicker::make('date_of_birth')
+                            ->displayFormat('m/d/Y'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['date_of_birth'],
+                            fn (Builder $query, $date): Builder =>
+                            $query->whereDate('date_of_birth', $date)
+                        );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
