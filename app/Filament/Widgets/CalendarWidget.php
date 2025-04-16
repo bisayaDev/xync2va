@@ -98,27 +98,27 @@ class CalendarWidget extends FullCalendarWidget
                                 if($get('client_id'))
                                     return Carbon::make(Client::find($get('client_id'))->date_of_birth)->format('m/d/Y');
                                 return "N/A";
-                            }),
+                            })->columnSpan(1),
                          Placeholder::make('Phone Number')
                              ->content(function ($get){
                                  if($get('client_id'))
                                      return Client::find($get('client_id'))->phone;
                                  return "N/A";
-                             }),
+                             })->columnSpan(1),
                          Placeholder::make('Medication Type')
                              ->content(function ($get){
                                  if($get('client_id'))
                                      return ucfirst(Client::find($get('client_id'))->med_type);
                                  return "N/A";
-                             }),
-                         Placeholder::make('Client\'s Diagnosis')
+                             })->columnSpan(1),
+                         Placeholder::make('Diagnosis')
                              ->content(function ($get){
                                  if($get('client_id'))
                                      return Client::find($get('client_id'))->diagnosis;
                                  return "N/A";
                              })
-                             ->columnSpan(2),
-                     ])->columns(2)
+                             ->columnSpan(3),
+                     ])->columns(3)
                 ])
                 ->mountUsing(
                     function (Form $form, array $arguments) {
