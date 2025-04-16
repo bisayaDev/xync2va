@@ -25,6 +25,7 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
     protected static ?int $navigationSort = 3;
+    protected static ?string $label = "Patients";
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
@@ -37,6 +38,11 @@ class ClientResource extends Resource
                 DatePicker::make('date_of_birth'),
                 TextInput::make('phone'),
                 TextArea::make('diagnosis'),
+                Forms\Components\Select::make('med_type')
+                    ->options([
+                        'medical' => 'Medical',
+                        'medication' => 'Medication'
+                    ]),
                 FileUpload::make('documents')
                     ->multiple()
                     ->directory('clients-documents')
@@ -59,21 +65,25 @@ class ClientResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('first_name')
+                    ->label('First Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('last_name')
+                    ->label('Last Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('date_of_birth')
+                    ->label('DOB')
                     ->date('m/d/Y')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->searchable()
-                    ->label('Age')
+                    ->label('AGE')
                     ->sortable()
                     ->formatStateUsing(fn($record)=> Carbon::make($record->date_of_birth)->age),
                 TextColumn::make('phone')
+                    ->label('PHONE')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('diagnosis')
@@ -81,6 +91,15 @@ class ClientResource extends Resource
                     ->sortable()
                     ->words(8)
                     ->tooltip(fn($state) => $state),
+                TextColumn::make('med_type')
+                    ->label('Med Type')
+                    ->badge()
+                    ->color(fn ($state): string => match ($state) {
+                        'medical' => 'info',
+                        'medication' => 'warning',
+                    })
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 Filter::make('date_of_birth')

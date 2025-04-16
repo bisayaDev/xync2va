@@ -40,7 +40,7 @@ class EventResource extends Resource
                 ->required()
                 ->searchable()
                 ->live()
-                ->label('Client / Patient')
+                ->label('Patient')
                 ->options(Client::all()->pluck('full_name', 'id')),
                 DatePicker::make('date')
                     ->required()
@@ -104,6 +104,7 @@ class EventResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('client_id')
+                    ->label('Patient')
                     ->sortable()
                     ->searchable()
                     ->formatStateUsing(fn($state) => Client::find($state)->full_name),

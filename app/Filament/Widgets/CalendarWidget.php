@@ -32,12 +32,6 @@ class CalendarWidget extends FullCalendarWidget
                 ->label('New Event Today')
                 ->color(Color::hex("#01A2E6"))
                 ->form([
-                    Select::make('med_type')
-                        ->required()
-                        ->options([
-                            'medical' => 'Medical',
-                            'medication' => 'Medication',
-                        ]),
                     DatePicker::make('date')
                         ->required(),
                     Select::make('type')
@@ -51,7 +45,7 @@ class CalendarWidget extends FullCalendarWidget
                         ->required()
                         ->searchable()
                         ->live()
-                        ->label('Client / Patient')
+                        ->label('Patient')
                         ->options(
                             Client::all()->mapWithKeys(function ($client) {
                                 // Format the date of birth to mm/dd/yyyy
