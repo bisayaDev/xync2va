@@ -19,6 +19,7 @@ use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class CalendarWidget extends FullCalendarWidget
@@ -59,6 +60,24 @@ class CalendarWidget extends FullCalendarWidget
                                 return [$client->id => $label];
                             })
                         ),
+                    Placeholder::make('anything')
+                        ->hiddenLabel()
+                        ->reactive()
+                        ->content(function (callable $get) {
+                            if(!$get('client_id'))
+                                return "";
+                            $id = $get('client_id');
+                            $client = Client::find($id);
+                            $name = $client->full_name;
+
+                            if($client->med_type)
+                            {
+                                return "";
+                            }
+
+                            $url = '/app/clients?tableSearch=' . $name;
+                            return new HtmlString("<div style='color: red;'>Patient $name doesn't have Med Type. Click <a href='$url' ><u>here</u></a> to set the med type.</div>");
+                        }),
                     TimePicker::make('starts_time')
                         ->required()
                         ->live()
