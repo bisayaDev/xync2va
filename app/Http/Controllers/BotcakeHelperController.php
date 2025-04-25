@@ -90,6 +90,8 @@ class BotcakeHelperController extends Controller
         // Add the required number of days to get to next Thursday
         $nextThursday = $currentDate->copy()->addDays($daysUntilThursday);
 
+        $nextThursday->startOfDay();
+
         // Create an array with the date information
         $response = [
             'next_thursday' => $nextThursday->format('Y-m-d H:i:s'),
@@ -122,6 +124,9 @@ class BotcakeHelperController extends Controller
 
         // Add the required number of days to get to next Friday
         $nextFriday = $currentDate->copy()->addDays($daysUntilFriday);
+
+        // Set the time to 00:00:00
+        $nextFriday->startOfDay();
 
         // Create response array with multiple date formats
         $response = [
