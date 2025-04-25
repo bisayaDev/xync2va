@@ -176,4 +176,9 @@ class BotcakeHelperController extends Controller
             'full_string' => ($result ? 'yes' : 'no') . ' | ' . $checkDate->format('Y-m-d H:i:s') . ' | ' . $condition . ' | ' . $refDate->format('Y-m-d H:i:s')
         ]);
     }
+
+    public function assignValue(Request $request)
+    {
+        return response()->json([$request->get('value')]);
+    }
 }
