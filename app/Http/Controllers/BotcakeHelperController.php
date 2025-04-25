@@ -137,4 +137,42 @@ class BotcakeHelperController extends Controller
 
         return response()->json($response);
     }
+
+    /**
+     * Compare two dates based on a condition
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function compareDates(Request $request)
+    {
+
+        // Parse the dates
+        $checkDate = $request->get('check_date') === "now" ? now()->startOfDay() : Carbon::parse($request->get('check_date'))->startOfDay();
+        $refDate = Carbon::parse($request->get('ref_date'))->startOfDay();
+        $condition = $request->get('condition');
+
+        // Perform the comparison based on condition
+        $result = false;
+
+        switch ($condition) {
+            case 'before':
+                $result = $checkDate->lt($refDate);
+                break;
+            case 'after':
+                $result = $checkDate->gt($refDate);
+                break;
+            case 'equal':
+                $result = $checkDate->eq($refDate);
+                break;
+        }
+
+        // Return the result
+        return response()->json([
+            'value' => $result ? 'yes' : 'no',
+            'condition' => $condition,
+            'check_date' => $checkDate->format('Y-m-d H:i:s'),
+            'ref_date' => $refDate->format('Y-m-d H:i:s'),
+        ]);
+    }
 }
