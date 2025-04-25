@@ -169,7 +169,7 @@ class BotcakeHelperController extends Controller
 
         // Return the result
         return response()->json([
-            'value' => $result ? 'yes' : 'no',
+            'value' => ($result ? 'yes' : 'no') . ' | ' . $checkDate->format('Y-m-d H:i:s') . ' | ' . $condition . ' | ' . $refDate->format('Y-m-d H:i:s')  ,
             'condition' => $condition,
             'check_date' => $checkDate->format('Y-m-d H:i:s'),
             'ref_date' => $refDate->format('Y-m-d H:i:s'),
