@@ -179,6 +179,8 @@ class BotcakeHelperController extends Controller
 
     public function assignValue(Request $request)
     {
-        return response()->json([$request->get('value')]);
+        return response()->json([
+            'value' => $request->get('value')
+        ]);
     }
 }
