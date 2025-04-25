@@ -14,7 +14,8 @@ class ClientFactory extends Factory
             'last_name' => fake()->lastName,
             'date_of_birth' => $this->faker->dateTimeBetween('1990-01-01', '2000-12-31')->format('Y-m-d'),
             'phone' => fake()->phoneNumber,
-            'diagnosis' => $this->faker->optional()->sentence
+            'diagnosis' => $this->faker->sentence,
+            'med_type' => fake()->randomElement(['medication', 'medical']),
         ];
     }
 
