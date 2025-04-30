@@ -95,6 +95,7 @@ class BotcakeHelperController extends Controller
         // Create an array with the date information
         $response = [
             'next_thursday' => $nextThursday->format('Y-m-d H:i:s'),
+            'formatted_date' => $nextThursday->format('F j'),
             'timestamp' => $nextThursday->timestamp,
             'iso_format' => $nextThursday->toIso8601String()
         ];
@@ -131,6 +132,7 @@ class BotcakeHelperController extends Controller
         // Create response array with multiple date formats
         $response = [
             'next_friday' => $nextFriday->format('Y-m-d H:i:s'),
+            'formatted_date' => $nextFriday->format('F j'),
             'timestamp' => $nextFriday->timestamp,
             'iso_format' => $nextFriday->toIso8601String()
         ];
