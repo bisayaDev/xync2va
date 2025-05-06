@@ -9,3 +9,4 @@ Route::POST('assign-value', [\App\Http\Controllers\BotcakeHelperController::clas
 Route::GET('next-thursday', [\App\Http\Controllers\BotcakeHelperController::class, 'getNextThursday']);
 Route::GET('next-friday', [\App\Http\Controllers\BotcakeHelperController::class, 'getNextFriday']);
 
+Route::GET('meeting/{passcode}', [\App\Http\Controllers\MeetingController::class, 'getMeeting']);
