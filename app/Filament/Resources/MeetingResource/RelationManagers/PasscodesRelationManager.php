@@ -4,9 +4,12 @@ namespace App\Filament\Resources\MeetingResource\RelationManagers;
 
 use App\Models\Passcode;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -35,10 +38,30 @@ class PasscodesRelationManager extends RelationManager
             ->recordTitleAttribute('passcode')
             ->columns([
                 Tables\Columns\TextColumn::make('passcode'),
-                Tables\Columns\TextColumn::make('person_name')
+                Tables\Columns\TextColumn::make('person_name'),
+                Tables\Columns\IconColumn::make('has_joined')
+                    ->boolean(),
+                TextColumn::make('date_scheduled'),
+                TextColumn::make('date_time_joined'),
+                TextColumn::make('date_time_left'),
             ])
             ->filters([
-                //
+                Filter::make('has_joined')
+                    ->toggle()
+                    ->query(function (Builder $query) {
+                        $query->where('has_joined', true);
+                    }),
+                Filter::make('date_time_joined')
+                    ->form([
+                        DatePicker::make('select_date'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['select_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_time_joined', '=', $date),
+                            );
+                    })
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

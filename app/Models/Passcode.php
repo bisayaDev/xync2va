@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Passcode extends Model
 {
     protected $guarded = [];
+    protected $casts = [
+        'logs' => 'array',
+    ];
 
 
     public function meeting(): BelongsTo
