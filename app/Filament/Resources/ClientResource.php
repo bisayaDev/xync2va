@@ -80,7 +80,7 @@ class ClientResource extends Resource
                 TextColumn::make('age')
                     ->label('AGE')
                     ->sortable(query: function ($query, string $direction): void {
-                        $query->orderByRaw("(julianday('now') - julianday(date_of_birth)) / 365.25 {$direction}");
+                        $query->orderByRaw("CASE WHEN date_of_birth IS NULL THEN 999999 ELSE (julianday('now') - julianday(date_of_birth)) / 365.25 END {$direction}");
                     }),
                 TextColumn::make('phone')
                     ->label('PHONE')
