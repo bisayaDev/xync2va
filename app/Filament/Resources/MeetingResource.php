@@ -23,6 +23,7 @@ class MeetingResource extends Resource
 
     public static function canViewAny(): bool
     {
+        return false;
         $email = auth()->user()->email;
         $allowed_emails = ["@admin.com","@sync2va.com"];
         $found = array_reduce($allowed_emails, function($carry, $item) use ($email) {

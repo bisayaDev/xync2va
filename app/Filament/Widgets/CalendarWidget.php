@@ -205,7 +205,7 @@ class CalendarWidget extends FullCalendarWidget
             ->map(
                 fn (Event $event) => [
                     'id' => $event->id,
-                    'title' => Client::find($event->client_id)->full_name,
+                    'title' => Client::find($event->client_id)?->full_name,
                     'start' => $event->starts_at,
                     'end' => $event->ends_at,
                     'url' => $event->med_type === "medical" ? EventResource::getUrl(name: 'edit', parameters: ['record' => $event])
