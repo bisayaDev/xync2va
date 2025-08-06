@@ -77,11 +77,11 @@ class ClientResource extends Resource
                     ->date('m/d/Y')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->searchable()
+                TextColumn::make('age')
                     ->label('AGE')
-                    ->sortable()
-                    ->formatStateUsing(fn($record)=> Carbon::make($record->date_of_birth)->age),
+                    ->sortable(query: function ($query, string $direction): void {
+                        $query->orderByRaw("(julianday('now') - julianday(date_of_birth)) / 365.25 {$direction}");
+                    }),
                 TextColumn::make('phone')
                     ->label('PHONE')
                     ->searchable()
