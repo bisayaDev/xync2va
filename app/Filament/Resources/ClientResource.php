@@ -80,7 +80,15 @@ class ClientResource extends Resource
                 TextColumn::make('age')
                     ->label('AGE')
                     ->sortable(query: function ($query, string $direction): void {
-                        $query->orderByRaw("CASE WHEN date_of_birth IS NULL THEN 999999 ELSE (julianday('now') - julianday(date_of_birth)) / 365.25 END {$direction}");
+                        $dbDriver = config('database.default');
+                        $connection = config("database.connections.{$dbDriver}.driver");
+                        
+                        if ($connection === 'sqlite') {
+                            $query->orderByRaw("CASE WHEN date_of_birth IS NULL THEN 999999 ELSE (julianday('now') - julianday(date_of_birth)) / 365.25 END {$direction}");
+                        } else {
+                            // MySQL/PostgreSQL
+                            $query->orderByRaw("CASE WHEN date_of_birth IS NULL THEN 999999 ELSE TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) END {$direction}");
+                        }
                     }),
                 TextColumn::make('phone')
                     ->label('PHONE')
