@@ -12,6 +12,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
@@ -110,6 +111,8 @@ class CalendarWidget extends FullCalendarWidget
                         ->live()
                         ->seconds(false)
                         ->columnSpan(1),
+                    TextArea::make('notes')
+                        ->rows(5),
                     Section::make()
                      ->schema([
                          Placeholder::make('Date of Birth')

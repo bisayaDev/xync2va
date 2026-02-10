@@ -56,6 +56,8 @@ class ClientResource extends Resource
                     ->downloadable()
                     ->openable()
                     ->appendFiles(),
+                TextArea::make('notes')
+                    ->rows(5),
             ])
             ->columns(1);
     }
@@ -82,7 +84,7 @@ class ClientResource extends Resource
                     ->sortable(query: function ($query, string $direction): void {
                         $dbDriver = config('database.default');
                         $connection = config("database.connections.{$dbDriver}.driver");
-                        
+
                         if ($connection === 'sqlite') {
                             $query->orderByRaw("CASE WHEN date_of_birth IS NULL THEN 999999 ELSE (julianday('now') - julianday(date_of_birth)) / 365.25 END {$direction}");
                         } else {
@@ -126,7 +128,7 @@ class ClientResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->slideOver()
-                    ->modalWidth('md'),
+                    ->modalWidth('md')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -138,7 +140,9 @@ class ClientResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AppointmentsRelationManager::class,
+            RelationManagers\MedicationRelationManager::class,
+            RelationManagers\MedicalRelationManager::class,
         ];
     }
 
@@ -147,7 +151,7 @@ class ClientResource extends Resource
         return [
             'index' => Pages\ListClients::route('/'),
 //            'create' => Pages\CreateClient::route('/create'),
-//            'edit' => Pages\EditClient::route('/{record}/edit'),
+            'edit' => Pages\EditClient::route('/{record}/edit'),
         ];
     }
 }

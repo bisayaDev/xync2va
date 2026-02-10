@@ -25,6 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        schema::table('passcodes', function (Blueprint $table) {
+            $table->dropColumn('has_joined');
+            $table->dropColumn('date_scheduled');
+            $table->dropColumn('date_time_joined');
+            $table->dropColumn('date_time_left');
+            $table->dropColumn('logs');
+        });
     }
 };

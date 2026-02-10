@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
@@ -26,5 +28,20 @@ class Client extends Model
         }
 
         return \Carbon\Carbon::parse($this->date_of_birth)->age;
+    }
+
+    public function medications()
+    {
+        return $this->hasMany(Event::class, 'client_id')->where('med_type', 'medication');
+    }
+
+    public function medical()
+    {
+        return $this->hasMany(Event::class, 'client_id')->where('med_type', 'medical');
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Event::class, 'client_id');
     }
 }

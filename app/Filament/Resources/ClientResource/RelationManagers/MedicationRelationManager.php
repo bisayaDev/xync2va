@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ClientResource\RelationManagers;
 
-use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\Client;
-use App\Models\Event;
 use Carbon\Carbon;
+use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -14,34 +12,29 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EventResource extends Resource
+class MedicationRelationManager extends RelationManager
 {
-    protected static ?string $model = Event::class;
-    protected static ?string $label = "Medical Records";
-    protected static ?int $navigationSort = 1;
+    protected static string $relationship = 'medications';
 
-    protected static ?string $navigationIcon = 'heroicon-o-identification';
-
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('client_id')
-                ->columnSpanFull()
-                ->disabledOn('edit')
-                ->required()
-                ->searchable()
-                ->live()
-                ->label('Patient')
-                ->options(Client::all()->pluck('full_name', 'id')),
+                    ->columnSpanFull()
+                    ->disabledOn('edit')
+                    ->required()
+                    ->searchable()
+                    ->live()
+                    ->label('Patient')
+                    ->options(Client::all()->pluck('full_name', 'id')),
                 DatePicker::make('date')
                     ->required()
                     ->disabledOn('edit')
@@ -63,10 +56,6 @@ class EventResource extends Resource
                     ->required()
                     ->disabledOn('edit')
                     ->columnSpan(1),
-
-                TextArea::make('notes')
-                    ->rows(5)
-                    ->columnSpan(2),
                 Section::make()
                     ->schema([
                         Placeholder::make('Date of Birth')
@@ -98,20 +87,20 @@ class EventResource extends Resource
                     ->label('Final Diagnosis')
                     ->required()
                     ->rows(6)
-                ->columnSpan(2),
-            ])
-            ->columns(2);
+                    ->columnSpan(2),
+            ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('med_type')
             ->columns([
                 TextColumn::make('client_id')
                     ->label('Patient')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn($state) => Client::find($state)?->fullName),
+                    ->formatStateUsing(fn($state) => Client::find($state)->full_name),
                 TextColumn::make('type')
                     ->sortable()
                     ->searchable()
@@ -123,7 +112,7 @@ class EventResource extends Resource
                     ->formatStateUsing(function($record) {
                         $date = Carbon::make($record->starts_at)->format('m/d/Y | l');
                         return $date;
-                }),
+                    }),
                 TextColumn::make('ends_at')
                     ->sortable()
                     ->searchable()
@@ -135,38 +124,19 @@ class EventResource extends Resource
                     }),
             ])
             ->filters([
-                Filter::make('med_type')
-                    ->baseQuery(fn (Builder $query) => $query->where('med_type', 'medical'))
-                    ->form([])
+                //
+            ])
+            ->headerActions([
+//                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->slideOver()
-                    ->closeModalByClickingAway(false)
-                    ->modalWidth('md'),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListEvents::route('/'),
-//            'create' => Pages\CreateEvent::route('/create'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
-            'view' => Pages\ViewEvent::route('/{record}/view'),
-        ];
     }
 }
