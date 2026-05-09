@@ -110,7 +110,7 @@ class MedicationRecordsResource extends Resource
                     ->label('Patient')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn($state) => Client::find($state)->full_name),
+                    ->formatStateUsing(fn($state) => Client::find($state)?->full_name),
                 TextColumn::make('type')
                     ->sortable()
                     ->searchable()
